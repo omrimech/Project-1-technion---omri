@@ -347,6 +347,7 @@ function addNewTask(index) {
   innerDiv.style.borderStyle = "groove";
   innerDiv.classList.add("TodoAddDiv")
   let newTodoInput = createSpan("Title : ", "", `Todos-add${index}`);
+  newTodoInput.classList.add("spanStyle")
   // btn div 
   let btnDiv = document.createElement("div");
   btnDiv.classList.add("divBtns")
@@ -362,9 +363,10 @@ function addNewTask(index) {
   };
 
   innerDiv.appendChild(newTodoInput);
+  
+  innerDiv.appendChild(btnDiv);
   btnDiv.appendChild(cancelBtn);
   btnDiv.appendChild(addBtn);
-  innerDiv.appendChild(btnDiv);
   mainDivTodos.appendChild(innerDiv);
 }
 
