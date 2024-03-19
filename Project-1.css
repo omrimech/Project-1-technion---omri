@@ -1,0 +1,36 @@
+.container {
+    display: flex;
+    flex-direction: row;
+}
+
+.left {
+    text-align: left;
+    width: 33%;
+}
+
+.mid {
+    text-align: left;
+    width: 33%
+}
+
+.right {
+    text-align: left;
+    width: 33%
+}
+
+userDiv {
+    border-style: ridge;
+    border-width: 7px;
+}
+
+.TodoAddDiv {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.divBtns {
+    display: flex;
+    justify-content: flex-end;
+}
