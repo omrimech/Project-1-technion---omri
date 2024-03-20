@@ -67,7 +67,7 @@ function createUserDiv(item, index) {
   // Delete Button
   let deleteBtn = createButton("Delete");
   deleteBtn.onclick = function () {
-    DeleteUserIndex(index);
+    DeleteUserIndex(item.id);
   };
   userDiv.appendChild(deleteBtn);
 
@@ -178,7 +178,8 @@ async function loadDataAndInitialize() {
 loadDataAndInitialize();
 
 // Delete a user
-function DeleteUserIndex(index) {
+function DeleteUserIndex(id) {
+  const index = users.findIndex(user => user.id === id)
   users.splice(index, 1);
   searchData();
 }
@@ -415,14 +416,11 @@ function addNewPosts(index){
   mainDivPosts.appendChild(innerDiv);
 }
 
-function addPost(index) {
-  let correct
-}
+// function addPost(index) {
+//   let correct
+// }
 
 function getUserLength(index) {
   let tasks = todos.filter((x) => x.userId === index);
   return tasks.length;
 }
-
-
-//test
