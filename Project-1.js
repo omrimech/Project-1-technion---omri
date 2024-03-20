@@ -18,8 +18,7 @@ async function loadPosts() {
 async function loadTodos() {
   const resp = await fetch(todosPage);
   todos = await resp.json();
-  console.log(todos);
-  searchData();
+  searchData()
 }
 
 // Create a div with a user
@@ -42,11 +41,11 @@ function createUserDiv(item, index) {
   userDiv.appendChild(idspan);
 
   // Name
-  let nameSpan = createSpan("Name :", item.name, `inputName-${item.id}`);
+  let nameSpan = createSpan("Name :", item.name, `inputName-${index}`);
   userDiv.appendChild(nameSpan);
 
   // Email
-  let emailSpan = createSpan("Email :", item.email, `inputEmail-${item.id}`);
+  let emailSpan = createSpan("Email :", item.email, `inputEmail-${index}`);
   userDiv.appendChild(emailSpan);
 
   // Other Data
@@ -74,7 +73,7 @@ function createUserDiv(item, index) {
   // Update Button
   let updateBtn = createButton("Update");
   updateBtn.onclick = function () {
-    updateUserData(item.id);
+    updateUserData(index ,item.id);
   };
   userDiv.appendChild(updateBtn);
 
@@ -82,12 +81,12 @@ function createUserDiv(item, index) {
   let hiddenDiv = document.createElement("div");
 
   hiddenDiv.style.display = "none";
-  let hiddenStreet = createSpan("Street :", item.address.street, `inputStreet-${item.id}`);
+  let hiddenStreet = createSpan("Street :", item.address.street, `inputStreet-${index}`);
   hiddenDiv.id = `hiddenDiv${item.id}`;
   hiddenDiv.appendChild(hiddenStreet);
-  let hiddenCity = createSpan("City :", item.address.city, `inputCity-${item.id}`);
+  let hiddenCity = createSpan("City :", item.address.city, `inputCity-${index}`);
   hiddenDiv.appendChild(hiddenCity);
-  let hiddenZipCode = createSpan("Zip Code :", item.address.zipcode, `inputZipCode-${item.id}`);
+  let hiddenZipCode = createSpan("Zip Code :", item.address.zipcode, `inputZipCode-${index}`);
   hiddenDiv.appendChild(hiddenZipCode);
   userDiv.appendChild(hiddenDiv);
   return userDiv;
@@ -192,13 +191,13 @@ function updateUserData(index) {
   let userCity = document.getElementById(`inputCity-${index}`).value;
   let userZipCode = document.getElementById(`inputZipCode-${index}`).value;
 
-  users[index].name = userName;
-  users[index].email = userEmail;
-  users[index].address.street = userStreet;
-  users[index].address.city = userCity;
-  users[index].address.zipcode = userZipCode;
+  users[index-1].name = userName;
+  users[index-1].email = userEmail;
+  users[index-1].address.street = userStreet;
+  users[index-1].address.city = userCity;
+  users[index-1].address.zipcode = userZipCode;
   alert(`ID : ${index} User information has updated`);
-  searchData();
+  searchData(index);
   return;
 }
 
@@ -319,15 +318,15 @@ function checkStats(label, status, TaskId) {
 function completeSelectedTask(index, user_id) {
   let id = document.getElementById(`taskId-${index}`);
   let button = document.getElementById(`markButton-${index}`);
-  todos[index - 1].completed = true;
+  console.log(index)
+  todos[index -1].completed = true;
   alert("Task marked as completed");
-  id.innerText = todos[index - 1].completed;
+  id.innerText = todos[index -1].completed;
   button.style.display = "none";
 }
 
 // Clears all background color of each div
 function clearAllBackgrounds() {
-  console.log(users.length);
   for (let i = 1; i <= users.length; ++i) {
     let correctDiv = document.getElementById(`id-${i}`);
     if (!correctDiv) {
@@ -378,16 +377,16 @@ function cancelFun(index) {
 function addTask(index) {
   let correctValue = document.getElementById(`Todos-add${index}`).value;
   const length = getUserLength(index);
-  console.log(length);
-  let obj = { userId: index, id: length + 1, title: correctValue, completed: false };
-  let userIndex = todos.findIndex((item) => item.userId === index);
-  if (userIndex === -1) {
-    todos.push(obj);
-  } else {
-    todos[userIndex] = obj;
-  }
+  let obj = { userId: index, id: todos.length+1 , title: correctValue, completed: false };
+  todos.push(obj);
+  // let userIndex = todos.findIndex((item) => item.userId === index);
+  // if (userIndex === -1) {
+  //   todos.push(obj);
+  // } else {
+  //   todos[userIndex] = obj;
+  // }
   loadIdTodosPosts(index);
-  console.log(todos);
+  console.log(todos)
 }
 
 function addNewPosts(index){
