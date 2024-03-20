@@ -185,19 +185,20 @@ function DeleteUserIndex(id) {
 }
 
 // Update user data
-function updateUserData(index) {
-  let userName = document.getElementById(`inputName-${index}`).value;
-  let userEmail = document.getElementById(`inputEmail-${index}`).value;
-  let userStreet = document.getElementById(`inputStreet-${index}`).value;
-  let userCity = document.getElementById(`inputCity-${index}`).value;
-  let userZipCode = document.getElementById(`inputZipCode-${index}`).value;
+function updateUserData(id) {
+  let userName = document.getElementById(`inputName-${id}`).value;
+  let userEmail = document.getElementById(`inputEmail-${id}`).value;
+  let userStreet = document.getElementById(`inputStreet-${id}`).value;
+  let userCity = document.getElementById(`inputCity-${id}`).value;
+  let userZipCode = document.getElementById(`inputZipCode-${id}`).value;
+  let index = users.findIndex(user => user.id === id )
 
   users[index].name = userName;
   users[index].email = userEmail;
   users[index].address.street = userStreet;
   users[index].address.city = userCity;
   users[index].address.zipcode = userZipCode;
-  alert(`ID : ${index} User information has updated`);
+  alert(`ID : ${id} User information has updated`);
   searchData();
   return;
 }
