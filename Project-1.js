@@ -8,6 +8,7 @@ const todosPage = "https://jsonplaceholder.typicode.com/todos";
 async function loadUsers() {
   const resp = await fetch(usersPage);
   users = await resp.json();
+  console.log(users);
   loadPosts();
 }
 async function loadPosts() {
@@ -18,7 +19,7 @@ async function loadPosts() {
 async function loadTodos() {
   const resp = await fetch(todosPage);
   todos = await resp.json();
-  searchData()
+  searchData();
 }
 
 // Create a div with a user
@@ -32,7 +33,7 @@ function createUserDiv(item, index) {
   let idinnerSpan = document.createElement("span");
   let idbr = document.createElement("br");
   idspan.onclick = function () {
-    loadIdTodosPosts(item.id);
+    loadIdTodosPosts(item.id, index);
   };
   idspan.innerText = "ID : ";
   idinnerSpan.innerText = item.id;
@@ -73,7 +74,7 @@ function createUserDiv(item, index) {
   // Update Button
   let updateBtn = createButton("Update");
   updateBtn.onclick = function () {
-    updateUserData(index ,item.id);
+    updateUserData(index, item.id);
   };
   userDiv.appendChild(updateBtn);
 
@@ -178,8 +179,10 @@ loadDataAndInitialize();
 
 // Delete a user
 function DeleteUserIndex(id) {
-  const index = users.findIndex(user => user.id === id)
+  const index = users.findIndex((user) => user.id === id);
+  console.log(index);
   users.splice(index, 1);
+
   searchData();
 }
 
@@ -190,7 +193,7 @@ function updateUserData(id) {
   let userStreet = document.getElementById(`inputStreet-${id}`).value;
   let userCity = document.getElementById(`inputCity-${id}`).value;
   let userZipCode = document.getElementById(`inputZipCode-${id}`).value;
-  let index = users.findIndex(user => user.id === id )
+  let index = users.findIndex((user) => user.id === id);
 
   users[index].name = userName;
   users[index].email = userEmail;
@@ -203,11 +206,11 @@ function updateUserData(id) {
 }
 
 // displays this user currect todos and posts.
-function loadIdTodosPosts(index) {
-  clearAllBackgrounds();
-  console.log("clicked");
-  let correctDiv = document.getElementById(`id-${index}`);
-  correctDiv.style.background = "orange";
+function loadIdTodosPosts(index, id) {
+  let correctDiv = document.getElementById(`id-${id}`);
+  console.log(correctDiv);
+  clearAllBackgrounds(index, id);
+  correctDiv.style.backgroundColor = "orange";
   // Todos div
   let mainDivTodos = document.getElementById("userTodos");
   mainDivTodos.innerHTML = "";
@@ -216,7 +219,7 @@ function loadIdTodosPosts(index) {
   todosHead.id = `head-todos`;
   let addTask = createButton("Add");
   addTask.onclick = function () {
-    addNewTask(index);
+    addNewTask(index, id);
   };
   mainDivTodos.appendChild(addTask);
   mainDivTodos.appendChild(todosHead);
@@ -226,9 +229,9 @@ function loadIdTodosPosts(index) {
   mainDivPosts.innerHTML = "";
   let postsHeader = createHeader(`Posts - User - ${index}`);
   let addPosts = createButton("Add");
-  addPosts.onclick = function (){
-    addNewPosts(index)
-  }
+  addPosts.onclick = function () {
+    addNewPosts(index, id);
+  };
   mainDivPosts.appendChild(addPosts);
   mainDivPosts.appendChild(postsHeader);
 
@@ -319,78 +322,70 @@ function checkStats(label, status, TaskId) {
 function completeSelectedTask(index, user_id) {
   let id = document.getElementById(`taskId-${index}`);
   let button = document.getElementById(`markButton-${index}`);
-  console.log(index)
-  todos[index -1].completed = true;
+  console.log(index);
+  todos[index - 1].completed = true;
   alert("Task marked as completed");
-  id.innerText = todos[index -1].completed;
+  id.innerText = todos[index - 1].completed;
   button.style.display = "none";
 }
 
 // Clears all background color of each div
-function clearAllBackgrounds() {
-  for (let i = 1; i <= users.length; ++i) {
+function clearAllBackgrounds(index, id) {
+  for (let i = 0; i <= users.length; i++) {
     let correctDiv = document.getElementById(`id-${i}`);
-    if (!correctDiv) {
-      return;
-    }
-    correctDiv.style.background = "white";
+      if (correctDiv){
+        correctDiv.style.background = "white";
+      }
   }
 }
 
-function addNewTask(index) {
+
+function addNewTask(index, id) {
   let mainDivTodos = document.getElementById("userTodos");
   mainDivTodos.innerHTML = "";
   let header = createHeader(`New Todo - User - ${index}`);
-  mainDivTodos.appendChild(header); 
+  mainDivTodos.appendChild(header);
   // Inside Div
   let innerDiv = document.createElement("div");
   innerDiv.style.height = "200px";
   innerDiv.style.borderStyle = "groove";
-  innerDiv.classList.add("TodoAddDiv")
+  innerDiv.classList.add("TodoAddDiv");
   let newTodoInput = createSpan("Title : ", "", `Todos-add${index}`);
-  newTodoInput.classList.add("spanStyle")
-  // btn div 
+  newTodoInput.classList.add("spanStyle");
+  // btn div
   let btnDiv = document.createElement("div");
-  btnDiv.classList.add("divBtns")
+  btnDiv.classList.add("divBtns");
   // Add button
   let addBtn = createButton("Add");
   addBtn.onclick = function () {
-    addTask(index);
+    addTask(index, id);
   };
   // Cancel button
   let cancelBtn = createButton("Cancel");
   cancelBtn.onclick = function () {
-    cancelFun(index);
+    cancelFun(index, id);
   };
 
   innerDiv.appendChild(newTodoInput);
-  
+
   innerDiv.appendChild(btnDiv);
   btnDiv.appendChild(cancelBtn);
   btnDiv.appendChild(addBtn);
   mainDivTodos.appendChild(innerDiv);
 }
 
-function cancelFun(index) {
-  loadIdTodosPosts(index);
+function cancelFun(index, id) {
+  loadIdTodosPosts(index, id);
 }
 
-function addTask(index) {
+function addTask(index, id) {
   let correctValue = document.getElementById(`Todos-add${index}`).value;
-  const length = getUserLength(index);
-  let obj = { userId: index, id: todos.length+1 , title: correctValue, completed: false };
+  let obj = { userId: index, id: todos.length + 1, title: correctValue, completed: false };
   todos.push(obj);
-  // let userIndex = todos.findIndex((item) => item.userId === index);
-  // if (userIndex === -1) {
-  //   todos.push(obj);
-  // } else {
-  //   todos[userIndex] = obj;
-  // }
-  loadIdTodosPosts(index);
-  console.log(todos)
+  loadIdTodosPosts(index, id);
 }
 
-function addNewPosts(index){
+function addNewPosts(index, id) {
   let mainDivPosts = document.getElementById("userPosts");
   mainDivPosts.innerHTML = "";
   let header = createHeader(`New Posts - User - ${index}`);
@@ -399,28 +394,110 @@ function addNewPosts(index){
   let innerDiv = document.createElement("div");
   innerDiv.style.height = "200px";
   innerDiv.style.borderStyle = "groove";
-  let newPostsInput = createSpan("Title : ", "", `Posts-add${index}`);
+  let inputDiv = document.createElement("div");
+  let newTitlePost = createSpan("Title : ", "", `Posts-addTitle${index}`);
+  let newBodyPost = createSpan("Body : ", "", `Posts-addBody${index}`);
+  newTitlePost.classList.add("spanStyle");
+  newBodyPost.classList.add("spanStyle");
   // add button
   let addBtn = createButton("Add");
   addBtn.onclick = function () {
-    addTask(index);
+    addPost(index, id);
   };
   // Cancel button
   let cancelBtn = createButton("Cancel");
   cancelBtn.onclick = function () {
-    cancelFun(index);
+    cancelFun(index, id);
   };
+  inputDiv.appendChild(newTitlePost);
+  inputDiv.appendChild(newBodyPost);
+  innerDiv.appendChild(inputDiv);
   innerDiv.appendChild(cancelBtn);
   innerDiv.appendChild(addBtn);
-  innerDiv.appendChild(newPostsInput);
   mainDivPosts.appendChild(innerDiv);
 }
 
-// function addPost(index) {
-//   let correct
+function addPost(index, id) {
+  let correctTitle = document.getElementById(`Posts-addTitle${index}`).value;
+  let correctBody = document.getElementById(`Posts-addBody${index}`).value;
+  let obj = { userId: index, id: posts.length, title: correctTitle, body: correctBody };
+  posts.push(obj);
+  loadIdTodosPosts(index, id);
+}
+
+// Add user to Users ->
+function addUserToUsers() {
+  let mainDivTodos = document.getElementById("userTodos");
+  mainDivTodos.innerHTML = "";
+  let mainDivPosts = document.getElementById("userPosts");
+  mainDivPosts.innerHTML = "";
+  let header = createHeader(`Add a users to array`);
+  mainDivTodos.appendChild(header);
+  let innerDiv = document.createElement("div");
+  innerDiv.style.height = "200px";
+  innerDiv.style.borderStyle = "groove";
+  let inputDiv = document.createElement("div");
+  let newNameUser = createSpan("Name : ", "", `addUser`);
+  let newEmailUser = createSpan("Email : ", "", `addEmail`);
+  newNameUser.classList.add("spanStyle");
+  newEmailUser.classList.add("spanStyle");
+  let btnDiv = document.createElement("div");
+  btnDiv.classList.add("divBtns");
+  let addUserBtn = createButton("Add");
+  addUserBtn.onclick = function () {
+    pushUser();
+  };
+  let cancelBtn = createButton("Cancel");
+  cancelBtn.onclick = function () {
+    cancelCreation();
+  };
+  // create in page
+  inputDiv.appendChild(newNameUser);
+  inputDiv.appendChild(newEmailUser);
+  innerDiv.appendChild(inputDiv);
+  innerDiv.appendChild(btnDiv);
+  innerDiv.appendChild(cancelBtn);
+  innerDiv.appendChild(addUserBtn);
+  mainDivTodos.appendChild(innerDiv);
+}
+
+function cancelCreation() {
+  let mainDivTodos = document.getElementById("userTodos");
+  mainDivTodos.innerHTML = "";
+  let mainDivPosts = document.getElementById("userPosts");
+  mainDivPosts.innerHTML = "";
+  searchData();
+}
+
+
+// function pushUser() {
+//   let newUserName = document.getElementById(`addUser`).value;
+//   let newUserEmail = document.getElementById(`addEmail`).value;
+//   let userIndex = getUserIndex();
+//   let obj = { id: userIndex, name: newUserName, email: newUserEmail, address: [{ street: null, city: null , zipcode: null }] };
+//   users.push(obj);
+//   let mainDivTodos = document.getElementById("userTodos");
+//   mainDivTodos.innerHTML = "";
+//   searchData();
 // }
 
-function getUserLength(index) {
-  let tasks = todos.filter((x) => x.userId === index);
-  return tasks.length;
+let totalUsers = users.length
+function pushUser(){
+  totalUsers++;
+  let newUserName = document.getElementById(`addUser`).value;
+  let newUserEmail = document.getElementById(`addEmail`).value;
+  let obj = { id: totalUsers, name: newUserName, email: newUserEmail, address: [{ street: "", city: "", zipcode: "" }] };
+  users.push(obj);
+  cancelCreation();
+  searchData();
+}
+
+function getUserIndex() {
+  const sortedIds = users.map((user) => user.id).sort((a, b) => a - b);
+  for (let i = 1; i <= sortedIds.length; i++) {
+    if (sortedIds[i - 1] !== i) {
+      return i;
+    }
+  }
+  return sortedIds.length + 1;
 }
