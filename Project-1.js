@@ -4,11 +4,14 @@ let todos;
 const usersPage = "https://jsonplaceholder.typicode.com/users";
 const postsPage = "https://jsonplaceholder.typicode.com/posts";
 const todosPage = "https://jsonplaceholder.typicode.com/todos";
+let totalUsers
 
 async function loadUsers() {
   const resp = await fetch(usersPage);
   users = await resp.json();
+  totalUsers = users.length
   console.log(users);
+  console.log(totalUsers);
   loadPosts();
 }
 async function loadPosts() {
@@ -209,7 +212,7 @@ function updateUserData(id) {
 function loadIdTodosPosts(index, id) {
   let correctDiv = document.getElementById(`id-${id}`);
   console.log(correctDiv);
-  clearAllBackgrounds(index, id);
+  clearAllBackgrounds();
   correctDiv.style.backgroundColor = "orange";
   // Todos div
   let mainDivTodos = document.getElementById("userTodos");
@@ -330,9 +333,10 @@ function completeSelectedTask(index, user_id) {
 }
 
 // Clears all background color of each div
-function clearAllBackgrounds(index, id) {
-  for (let i = 0; i <= users.length; i++) {
-    let correctDiv = document.getElementById(`id-${i}`);
+function clearAllBackgrounds() {
+  for (let i = 0; i < users.length; i++) {
+    console.log(users[i].id);
+    let correctDiv = document.getElementById(`id-${users[i].id}`);
       if (correctDiv){
         correctDiv.style.background = "white";
       }
@@ -470,27 +474,27 @@ function cancelCreation() {
 }
 
 
-// function pushUser() {
-//   let newUserName = document.getElementById(`addUser`).value;
-//   let newUserEmail = document.getElementById(`addEmail`).value;
-//   let userIndex = getUserIndex();
-//   let obj = { id: userIndex, name: newUserName, email: newUserEmail, address: [{ street: null, city: null , zipcode: null }] };
-//   users.push(obj);
-//   let mainDivTodos = document.getElementById("userTodos");
-//   mainDivTodos.innerHTML = "";
-//   searchData();
-// }
-
-let totalUsers = users.length
-function pushUser(){
-  totalUsers++;
+function pushUser() {
   let newUserName = document.getElementById(`addUser`).value;
   let newUserEmail = document.getElementById(`addEmail`).value;
-  let obj = { id: totalUsers, name: newUserName, email: newUserEmail, address: [{ street: "", city: "", zipcode: "" }] };
+  let userIndex = totalUsers + 1
+
+  let obj = { id: userIndex, name: newUserName, email: newUserEmail, address: [{ street: null, city: null , zipcode: null }] };
   users.push(obj);
-  cancelCreation();
+  let mainDivTodos = document.getElementById("userTodos");
+  mainDivTodos.innerHTML = "";
+  totalUsers++
   searchData();
 }
+
+// function pushUser(){
+//   let newUserName = document.getElementById(`addUser`).value;
+//   let newUserEmail = document.getElementById(`addEmail`).value;
+//   let obj = { id: totalUsers, name: newUserName, email: newUserEmail, address: [{ street: "", city: "", zipcode: "" }] };
+//   users.push(obj);
+//   cancelCreation();
+//   searchData();
+// }
 
 function getUserIndex() {
   const sortedIds = users.map((user) => user.id).sort((a, b) => a - b);
